@@ -15,6 +15,7 @@ class ReactionButton<T> extends StatefulWidget {
   final Reaction<T>? initialReaction;
 
   final List<Reaction<T>> reactions;
+  final List<Reaction<T>>? currentReactions;
 
   /// Offset to add to the placement of the box
   final Offset boxOffset;
@@ -57,6 +58,7 @@ class ReactionButton<T> extends StatefulWidget {
     required this.onReactionChanged,
     required this.reactions,
     this.initialReaction,
+    this.currentReactions,
     this.boxOffset = Offset.zero,
     this.boxPosition = VerticalPosition.top,
     this.boxHorizontalPosition = HorizontalPosition.start,
@@ -103,7 +105,14 @@ class _ReactionButtonState<T> extends State<ReactionButton<T>> {
         onTapDown: (details) => _showReactionsBox(details.globalPosition),
         onLongPressStart: (details) =>
             _showReactionsBox(details.globalPosition),
-        child: (_selectedReaction ?? widget.reactions.first).icon,
+        child: widget.currentReactions != null &&
+                widget.currentReactions!.isNotEmpty
+            ? Wrap(
+                children: widget.currentReactions!.map((e) => e.icon).toList(),
+              )
+            : _selectedReaction != null
+                ? _selectedReaction!.icon
+                : Icon(Icons.add),
       );
 
   void _showReactionsBox(Offset buttonOffset) async {
